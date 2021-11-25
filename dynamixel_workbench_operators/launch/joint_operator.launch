@@ -2,7 +2,11 @@
   <arg name="namespace"               default="dynamixel_workbench"/>
   <arg name="is_loop"               default="false"/>
 
-  <param name="$(arg namespace)/trajectory_info" value="$(find dynamixel_workbench_operators)/config/motion.yaml"/>
+  <param name="$(arg namespace)/trajectory_info" value="$(find dynamixel_workbench_operators)/config/initialization.yaml"/>
+
+  <param name="$(arg namespace)/serving_trajectory_info" value="$(find dynamixel_workbench_operators)/config/serving_motion.yaml"/>
+
+  <param name="$(arg namespace)/cleaning_trajectory_info" value="$(find dynamixel_workbench_operators)/config/cleaning_motion.yaml"/>
 
   <node name="joint_operator" pkg="dynamixel_workbench_operators" type="joint_operator"
         required="true" output="screen" ns="$(arg namespace)">

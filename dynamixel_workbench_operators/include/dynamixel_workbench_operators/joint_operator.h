@@ -26,6 +26,7 @@
 #include <trajectory_msgs/JointTrajectoryPoint.h>
 
 #include <std_srvs/Trigger.h>
+#include "d2c_robot_msgs/DynamixelCommand.h"
 
 class JointOperator
 {
@@ -40,13 +41,15 @@ class JointOperator
   ros::Publisher joint_trajectory_pub_;
 
   // ROS Topic Subscriber
-
+  ros::Subscriber dynamixel_command_subscriber_;
   // ROS Service Server
   ros::ServiceServer move_command_server_;
 
   // ROS Service Client
 
   trajectory_msgs::JointTrajectory *jnt_tra_msg_;
+  trajectory_msgs::JointTrajectory *serving_motion_msg_;
+  trajectory_msgs::JointTrajectory *cleaning_motion_msg_;
   bool is_loop_;
 
  public:
@@ -58,6 +61,7 @@ class JointOperator
   bool getTrajectoryInfo(const std::string yaml_file, trajectory_msgs::JointTrajectory *jnt_tra_msg);
   bool moveCommandMsgCallback(std_srvs::Trigger::Request &req,
                              std_srvs::Trigger::Response &res);
+  void CommandMsgCallback(const d2c_robot_msgs::DynamixelCommand::ConstPtr& msg);
 };
 
 #endif // DYNAMIXEL_WORKBENCH_OPERATORS_H

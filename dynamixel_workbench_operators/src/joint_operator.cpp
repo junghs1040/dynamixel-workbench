@@ -24,15 +24,23 @@ JointOperator::JointOperator()
    is_loop_(false)
 {
   std::string yaml_file = node_handle_.param<std::string>("trajectory_info", "");
+  std::string yaml_file1 = node_handle_.param<std::string>("serving_trajectory_info", "");
+  std::string yaml_file2 = node_handle_.param<std::string>("cleaning_trajectory_info", "");
   jnt_tra_msg_ = new trajectory_msgs::JointTrajectory;
+  serving_motion_msg_ = new trajectory_msgs::JointTrajectory;
+  cleaning_motion_msg_ = new trajectory_msgs::JointTrajectory;
 
+ 
   bool result = getTrajectoryInfo(yaml_file, jnt_tra_msg_);
-  if (result == false)
+  bool result1 = getTrajectoryInfo(yaml_file1, serving_motion_msg_);
+  bool result2 = getTrajectoryInfo(yaml_file2, cleaning_motion_msg_);
+
+  if (result == false || result1 == false || result2 == false)
   {
     ROS_ERROR("Please check YAML file");
     exit(0);
   }
-
+  dynamixel_command_subscriber_ = node_handle_.subscribe("dynamixel_position_command", 1000, &JointOperator::CommandMsgCallback, this);
   joint_trajectory_pub_ = node_handle_.advertise<trajectory_msgs::JointTrajectory>("joint_trajectory", 100);
   move_command_server_ = node_handle_.advertiseService("execution", &JointOperator::moveCommandMsgCallback, this);
 
@@ -41,7 +49,31 @@ JointOperator::JointOperator()
 
 JointOperator::~JointOperator()
 {
+  delete jnt_tra_msg_;
 }
+
+void JointOperator::CommandMsgCallback(const d2c_robot_msgs::DynamixelCommand::ConstPtr& msg)
+{
+  float motion_command = msg -> motion;
+  if (motion_command == 0.0)
+  {
+    joint_trajectory_pub_.publish(*jnt_tra_msg_);
+    ROS_INFO("publish dynamixel control info : %f", motion_command);
+  }
+  else if (motion_command == 1.0)
+  {
+    joint_trajectory_pub_.publish(*serving_motion_msg_);
+    ROS_INFO("publish dynamixel control info : %f", motion_command);
+  }
+  else if (motion_command == 2.0)
+  {
+    joint_trajectory_pub_.publish(*cleaning_motion_msg_);
+    ROS_INFO("publish dynamixel control info : %f", motion_command);
+  }
+
+
+}
+
 
 bool JointOperator::getTrajectoryInfo(const std::string yaml_file, trajectory_msgs::JointTrajectory *jnt_tra_msg)
 {
@@ -66,7 +98,8 @@ bool JointOperator::getTrajectoryInfo(const std::string yaml_file, trajectory_ms
   for (uint8_t index = 0; index < motion_size; index++)
   {
     trajectory_msgs::JointTrajectoryPoint jnt_tra_point;
-
+    //jnt_tra_point.positions.resize(10);
+    //jnt_tra_point.time_from_start.resize(10);
     std::string name = motion["names"][index].as<std::string>();
     YAML::Node motion_name = motion[name];
     for (uint8_t size = 0; size < joint_size; size++)
@@ -114,7 +147,7 @@ int main(int argc, char **argv)
   // Init ROS node
   ros::init(argc, argv, "joint_operator");
   JointOperator joint_operator;
-
+  
   ROS_INFO("For now, you can use publish joint trajectory msgs by triggering service(/execution)");
 
   if (joint_operator.isLoop())

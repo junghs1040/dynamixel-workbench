@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   sensor_msgs
   trajectory_msgs
+  d2c_robot_msgs
   cmake_modules
 )
 
