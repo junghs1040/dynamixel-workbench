@@ -6,7 +6,7 @@ motion:
     step: [0.0, 0.0, 0.0, 0.0]  # radian
     time_from_start: 2.0  # sec
   initialization2:
-    step: [0.68, -0.47, -0.42, -0.89]
+    step: [0.68, -0.47, -0.42, 0.89]
     time_from_start: 3.0
   initialization3:
     step: [0.0, 0.0, 0.0, 0.0]

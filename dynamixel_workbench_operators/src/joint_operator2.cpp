@@ -30,7 +30,6 @@ JointOperator::JointOperator()
   serving_motion_msg_ = new trajectory_msgs::JointTrajectory;
   cleaning_motion_msg_ = new trajectory_msgs::JointTrajectory;
 
- 
   bool result = getTrajectoryInfo(yaml_file, jnt_tra_msg_);
   bool result1 = getTrajectoryInfo(yaml_file1, serving_motion_msg_);
   bool result2 = getTrajectoryInfo(yaml_file2, cleaning_motion_msg_);
@@ -59,7 +58,7 @@ void JointOperator::CommandMsgCallback(const d2c_robot_msgs::DynamixelCommand::C
   if (motion_command == 0.0)
   {
     //jnt_tra_msg_->points.push_back(jnt_tra_point);
-    //joint_trajectory_pub_.publish(*jnt_tra_msg_);
+    joint_trajectory_pub_.publish(*jnt_tra_msg_);
     ROS_INFO("publish dynamixel control info : %f", motion_command);
   }
   else if (motion_command == 1.0)

@@ -62,6 +62,7 @@ class JointOperator
   bool moveCommandMsgCallback(std_srvs::Trigger::Request &req,
                              std_srvs::Trigger::Response &res);
   void CommandMsgCallback(const d2c_robot_msgs::DynamixelCommand::ConstPtr& msg);
+  void SaveTrajectory();
 };
 
 #endif // DYNAMIXEL_WORKBENCH_OPERATORS_H
