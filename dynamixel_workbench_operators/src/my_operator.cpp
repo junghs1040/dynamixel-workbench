@@ -51,7 +51,26 @@ JointOperator::~JointOperator()
 
 void JointOperator::CommandMsgCallback(const d2c_robot_msgs::DynamixelCommand::ConstPtr& msg)
 {
+  std::vector<std::vector<double>> target_joint_position;
   float motion_command = msg -> motion;
+  
+  target_joint_position.resize(5);
+  for (int i = 0; i < 4; ++i)
+  {
+    target_joint_position[i].resize(4);
+  }
+    
+
+  for(int i = 0; i < 2; i++)
+  {
+    for (int j = 0; j < 4; j++)
+    {
+      target_joint_position[i][j] = msg->joint_position[i].positions.at(j);
+    }
+  }
+
+  double position = msg->joint_position[1].positions.at(0);
+  ROS_INFO("%f", position);
   SaveTrajectory();
   if (motion_command == 0.0)
   {
@@ -68,7 +87,7 @@ void JointOperator::CommandMsgCallback(const d2c_robot_msgs::DynamixelCommand::C
   else if (motion_command == 2.0)
   {
     cleaning_motion_msg_ = new trajectory_msgs::JointTrajectory;
-    bool result2 = getTrajectoryInfo(yaml_file2, cleaning_motion_msg_);
+    bool result2 = getTrajectoryInfo2(cleaning_motion_msg_);
     joint_trajectory_pub_.publish(*cleaning_motion_msg_);
     ROS_INFO("publish dynamixel control info : %f", motion_command);
   }
@@ -133,6 +152,47 @@ bool JointOperator::getTrajectoryInfo(const std::string yaml_file, trajectory_ms
     jnt_tra_point.time_from_start.fromSec(motion_name["time_from_start"].as<double>());
 
     ROS_INFO("time_from_start : %f", motion_name["time_from_start"].as<double>());
+
+    jnt_tra_msg->points.push_back(jnt_tra_point);
+  }
+
+  return true;
+}
+
+bool JointOperator::getTrajectoryInfo2(trajectory_msgs::JointTrajectory *jnt_tra_msg)
+{
+
+  std::vector<std::string> joint = {"joint1", "joint2", "joint3","joint4"};
+  for (uint8_t index = 0; index < joint.size(); index++)
+  {
+    jnt_tra_msg->joint_names.push_back(joint[index]);
+  }
+
+  std::vector<std::string> motion_name = {"motion1","motion2","motion3","motion4","motion5"};
+  std::vector<std::vector<double>> motion = {{0.0, 0.0, 0.0, 0.0},{1.0, 1.0, 0.0, 0.0},{2.0, 2.0, 0.0, 0.0},
+                                             {3.0, 3.0, 0.0, 0.0},{2.0, 2.0, 0.0, 0.0}};
+  std::vector<double> time_from_start = {2.0, 3.0, 4.0, 5.0, 6.0};
+
+  for (uint8_t index = 0; index < motion_name.size(); index++)
+  {
+    trajectory_msgs::JointTrajectoryPoint jnt_tra_point;
+
+    for (uint8_t size = 0; size < joint.size(); size++)
+    {
+      if (joint.size() != 4)
+      {
+        ROS_ERROR("Please check motion step size. It must be equal to joint size");
+        return 0;
+      }
+
+      jnt_tra_point.positions.push_back(motion[index][size]);
+
+      ROS_INFO("motion_name : %s, step : %f", motion_name[index].c_str(), motion[index][size]);
+    }
+
+    jnt_tra_point.time_from_start.fromSec(time_from_start[index]);
+
+    ROS_INFO("time_from_start : %f", time_from_start[index]);
 
     jnt_tra_msg->points.push_back(jnt_tra_point);
   }

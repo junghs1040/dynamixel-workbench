@@ -27,6 +27,7 @@
 
 #include <std_srvs/Trigger.h>
 #include "d2c_robot_msgs/DynamixelCommand.h"
+#include "d2c_robot_msgs/JointPosition.h"
 
 class JointOperator
 {
@@ -60,6 +61,7 @@ class JointOperator
   bool isLoop(void){ return is_loop_;}
 
   bool getTrajectoryInfo(const std::string yaml_file, trajectory_msgs::JointTrajectory *jnt_tra_msg);
+  bool getTrajectoryInfo2(trajectory_msgs::JointTrajectory *jnt_tra_msg);
   bool moveCommandMsgCallback(std_srvs::Trigger::Request &req,
                              std_srvs::Trigger::Response &res);
   void CommandMsgCallback(const d2c_robot_msgs::DynamixelCommand::ConstPtr& msg);
