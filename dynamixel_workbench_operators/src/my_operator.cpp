@@ -16,7 +16,7 @@
 
 /* Authors: Taehun Lim (Darby) */
 
-#include "dynamixel_workbench_operators/joint_operator.h"
+#include "dynamixel_workbench_operators/my_operator.h"
 
 JointOperator::JointOperator()
   :node_handle_(""),
@@ -26,15 +26,13 @@ JointOperator::JointOperator()
   std::string yaml_file = node_handle_.param<std::string>("trajectory_info", "");
   std::string yaml_file1 = node_handle_.param<std::string>("serving_trajectory_info", "");
   std::string yaml_file2 = node_handle_.param<std::string>("cleaning_trajectory_info", "");
-  jnt_tra_msg_ = new trajectory_msgs::JointTrajectory;
+  
   serving_motion_msg_ = new trajectory_msgs::JointTrajectory;
-  cleaning_motion_msg_ = new trajectory_msgs::JointTrajectory;
 
-  bool result = getTrajectoryInfo(yaml_file, jnt_tra_msg_);
   bool result1 = getTrajectoryInfo(yaml_file1, serving_motion_msg_);
-  bool result2 = getTrajectoryInfo(yaml_file2, cleaning_motion_msg_);
 
-  if (result == false || result1 == false || result2 == false)
+
+  if (result1 == false)
   {
     ROS_ERROR("Please check YAML file");
     exit(0);
@@ -57,7 +55,8 @@ void JointOperator::CommandMsgCallback(const d2c_robot_msgs::DynamixelCommand::C
   SaveTrajectory();
   if (motion_command == 0.0)
   {
-    //jnt_tra_msg_->points.push_back(jnt_tra_point);
+    jnt_tra_msg_ = new trajectory_msgs::JointTrajectory;
+    bool result = getTrajectoryInfo(yaml_file, jnt_tra_msg_);
     joint_trajectory_pub_.publish(*jnt_tra_msg_);
     ROS_INFO("publish dynamixel control info : %f", motion_command);
   }
@@ -68,6 +67,8 @@ void JointOperator::CommandMsgCallback(const d2c_robot_msgs::DynamixelCommand::C
   }
   else if (motion_command == 2.0)
   {
+    cleaning_motion_msg_ = new trajectory_msgs::JointTrajectory;
+    bool result2 = getTrajectoryInfo(yaml_file2, cleaning_motion_msg_);
     joint_trajectory_pub_.publish(*cleaning_motion_msg_);
     ROS_INFO("publish dynamixel control info : %f", motion_command);
   }

@@ -71,6 +71,10 @@ add_executable(joint_operator src/joint_operator.cpp)
 add_dependencies(joint_operator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(joint_operator ${catkin_LIBRARIES} ${YAML_CPP_LIBRARIES})
 
+add_executable(my_operator src/my_operator.cpp)
+add_dependencies(my_operator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(my_operator ${catkin_LIBRARIES} ${YAML_CPP_LIBRARIES})
+
 add_executable(wheel_operator src/wheel_operator.cpp)
 add_dependencies(wheel_operator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(wheel_operator ${catkin_LIBRARIES})

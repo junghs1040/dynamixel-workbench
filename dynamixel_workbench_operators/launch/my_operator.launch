@@ -8,7 +8,7 @@
 
   <param name="$(arg namespace)/cleaning_trajectory_info" value="$(find dynamixel_workbench_operators)/config/cleaning_motion.yaml"/>
 
-  <node name="joint_operator2" pkg="dynamixel_workbench_operators" type="joint_operator2"
+  <node name="my_operator" pkg="dynamixel_workbench_operators" type="my_operator"
         required="true" output="screen" ns="$(arg namespace)">
     <param name="is_loop" value="$(arg is_loop)"/>
   </node>
