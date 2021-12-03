@@ -61,11 +61,10 @@ class JointOperator
   bool isLoop(void){ return is_loop_;}
 
   bool getTrajectoryInfo(const std::string yaml_file, trajectory_msgs::JointTrajectory *jnt_tra_msg);
-  bool getTrajectoryInfo2(trajectory_msgs::JointTrajectory *jnt_tra_msg);
+  bool getTrajectoryInfo2(std::vector<std::vector<double>> joint_position, trajectory_msgs::JointTrajectory *jnt_tra_msg);
   bool moveCommandMsgCallback(std_srvs::Trigger::Request &req,
                              std_srvs::Trigger::Response &res);
   void CommandMsgCallback(const d2c_robot_msgs::DynamixelCommand::ConstPtr& msg);
-  void SaveTrajectory();
   std::string yaml_file = node_handle_.param<std::string>("trajectory_info", "");
   std::string yaml_file1 = node_handle_.param<std::string>("serving_trajectory_info", "");
   std::string yaml_file2 = node_handle_.param<std::string>("cleaning_trajectory_info", "");

@@ -26,9 +26,11 @@ JointOperator::JointOperator()
   std::string yaml_file = node_handle_.param<std::string>("trajectory_info", "");
   std::string yaml_file1 = node_handle_.param<std::string>("serving_trajectory_info", "");
   std::string yaml_file2 = node_handle_.param<std::string>("cleaning_trajectory_info", "");
-  
+
+  jnt_tra_msg_ = new trajectory_msgs::JointTrajectory;
   serving_motion_msg_ = new trajectory_msgs::JointTrajectory;
 
+  bool result = getTrajectoryInfo(yaml_file, jnt_tra_msg_);
   bool result1 = getTrajectoryInfo(yaml_file1, serving_motion_msg_);
 
 
@@ -53,7 +55,7 @@ void JointOperator::CommandMsgCallback(const d2c_robot_msgs::DynamixelCommand::C
 {
   std::vector<std::vector<double>> target_joint_position;
   float motion_command = msg -> motion;
-  
+
   target_joint_position.resize(5);
   for (int i = 0; i < 4; ++i)
   {
@@ -71,35 +73,27 @@ void JointOperator::CommandMsgCallback(const d2c_robot_msgs::DynamixelCommand::C
 
   double position = msg->joint_position[1].positions.at(0);
   ROS_INFO("%f", position);
-  SaveTrajectory();
+
   if (motion_command == 0.0)
   {
-    jnt_tra_msg_ = new trajectory_msgs::JointTrajectory;
-    bool result = getTrajectoryInfo(yaml_file, jnt_tra_msg_);
     joint_trajectory_pub_.publish(*jnt_tra_msg_);
     ROS_INFO("publish dynamixel control info : %f", motion_command);
   }
+
   else if (motion_command == 1.0)
   {
     joint_trajectory_pub_.publish(*serving_motion_msg_);
     ROS_INFO("publish dynamixel control info : %f", motion_command);
   }
+
   else if (motion_command == 2.0)
   {
     cleaning_motion_msg_ = new trajectory_msgs::JointTrajectory;
-    bool result2 = getTrajectoryInfo2(cleaning_motion_msg_);
+    bool result2 = getTrajectoryInfo2(target_joint_position, cleaning_motion_msg_);
     joint_trajectory_pub_.publish(*cleaning_motion_msg_);
     ROS_INFO("publish dynamixel control info : %f", motion_command);
   }
 
-
-}
-
-void JointOperator::SaveTrajectory()
-{
-  //trajectory_msgs::JointTrajectoryPoint jnt_tra_point;
-  //std::string joint_name = {"joint1", "joint2", "joint3", "joint4"};
-  
 
 }
 
@@ -159,7 +153,7 @@ bool JointOperator::getTrajectoryInfo(const std::string yaml_file, trajectory_ms
   return true;
 }
 
-bool JointOperator::getTrajectoryInfo2(trajectory_msgs::JointTrajectory *jnt_tra_msg)
+bool JointOperator::getTrajectoryInfo2(std::vector<std::vector<double>> joint_position, trajectory_msgs::JointTrajectory *jnt_tra_msg)
 {
 
   std::vector<std::string> joint = {"joint1", "joint2", "joint3","joint4"};
@@ -169,8 +163,7 @@ bool JointOperator::getTrajectoryInfo2(trajectory_msgs::JointTrajectory *jnt_tra
   }
 
   std::vector<std::string> motion_name = {"motion1","motion2","motion3","motion4","motion5"};
-  std::vector<std::vector<double>> motion = {{0.0, 0.0, 0.0, 0.0},{1.0, 1.0, 0.0, 0.0},{2.0, 2.0, 0.0, 0.0},
-                                             {3.0, 3.0, 0.0, 0.0},{2.0, 2.0, 0.0, 0.0}};
+  std::vector<std::vector<double>> motion = joint_position;
   std::vector<double> time_from_start = {2.0, 3.0, 4.0, 5.0, 6.0};
 
   for (uint8_t index = 0; index < motion_name.size(); index++)
