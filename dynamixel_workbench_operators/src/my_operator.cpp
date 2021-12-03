@@ -56,24 +56,6 @@ void JointOperator::CommandMsgCallback(const d2c_robot_msgs::DynamixelCommand::C
   std::vector<std::vector<double>> target_joint_position;
   float motion_command = msg -> motion;
 
-  target_joint_position.resize(5);
-  for (int i = 0; i < 4; ++i)
-  {
-    target_joint_position[i].resize(4);
-  }
-    
-
-  for(int i = 0; i < 2; i++)
-  {
-    for (int j = 0; j < 4; j++)
-    {
-      target_joint_position[i][j] = msg->joint_position[i].positions.at(j);
-    }
-  }
-
-  double position = msg->joint_position[1].positions.at(0);
-  ROS_INFO("%f", position);
-
   if (motion_command == 0.0)
   {
     joint_trajectory_pub_.publish(*jnt_tra_msg_);
@@ -86,8 +68,22 @@ void JointOperator::CommandMsgCallback(const d2c_robot_msgs::DynamixelCommand::C
     ROS_INFO("publish dynamixel control info : %f", motion_command);
   }
 
-  else if (motion_command == 2.0)
+  else if (motion_command == 2.0) 
   {
+      target_joint_position.resize(5);
+      for (int i = 0; i < 4; ++i)
+      {
+        target_joint_position[i].resize(4);
+      }
+    
+
+      for(int i = 0; i < 2; i++)
+      {
+        for (int j = 0; j < 4; j++)
+        {
+          target_joint_position[i][j] = msg->joint_position[i].positions.at(j);
+        }
+      }
     cleaning_motion_msg_ = new trajectory_msgs::JointTrajectory;
     bool result2 = getTrajectoryInfo2(target_joint_position, cleaning_motion_msg_);
     joint_trajectory_pub_.publish(*cleaning_motion_msg_);
