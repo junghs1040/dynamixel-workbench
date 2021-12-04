@@ -1,17 +1,26 @@
 joint:
   names: [joint1, joint2, joint3, joint4]
 motion:
-  names: [motion1, motion2, motion3,motion4]
+  names: [motion1, motion2, motion3,motion4,motion5,motion6,motion7]
   motion1:
-    step: [0.68, -0.47, -0.42, 0.89]  # radian
+    step: [0.0, 0.0, 0.0, 0.0]  # radian
     time_from_start: 2.0  # sec
   motion2:
-    step: [0.0, 0.0, 0.0, 0.0]
-    time_from_start: 4.0
+    step: [-0.5, -0.150858, -0.804671, 0.956325]
+    time_from_start: 3.0
   motion3:
-    step: [0.68, -0.47, -0.42, 0.89]
-    time_from_start: 5.0
+    step: [0.538, -0.231, -0.672, 0.905]
+    time_from_start: 4.0
   motion4:
-    step: [0.0, 0.0, 0.0, 0.0]
+    step: [0.538, -0.06348, -0.58844, 0.65272]
+    time_from_start: 5.0
+  motion5:
+    step: [-1.033645, -0.063482, -0.588441, 0.652719]
     time_from_start: 6.0
+  motion6:
+    step: [-1.19647, -0.332636, -0.193998, 0.527430]
+    time_from_start: 7.0
+  motion7:
+    step: [-1.19647, -0.45805, -0.269321, 0.728168]
+    time_from_start: 7.0
 
