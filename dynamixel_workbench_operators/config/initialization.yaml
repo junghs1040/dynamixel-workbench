@@ -4,22 +4,11 @@ motion:
   names: [initialization1, initialization2, initialization3, initialization4, initialization5, initialization6]
   initialization1:
     step: [0.0, 0.0, 0.0, 0.0]  # radian
-    time_from_start: 2.0  # sec
+    time_from_start: 1.0  # sec
   initialization2:
-    step: [-0.5, -0.150858, -0.804671, 0.956325]
-    time_from_start: 3.0
-  initialization3:
-    step: [0.538, -0.231, -0.672, 0.905]
-    time_from_start: 4.0
-  initialization4:
-    step: [0.538, -0.06348, -0.58844, 0.65272]
-    time_from_start: 5.0
-  initialization5:
-    step: [-1.033645, -0.063482, -0.588441, 0.652719]
-    time_from_start: 6.0
-  initialization6:
-    step: [-1.19647, -0.45805, -0.269321, 0.728168]
-    time_from_start: 7.0
+    step: [-3.14,0.0,0.0,0.0]
+    time_from_start: 2.0
+
 
 
 #  initialization2:

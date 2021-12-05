@@ -77,7 +77,7 @@ void JointOperator::CommandMsgCallback(const d2c_robot_msgs::DynamixelCommand::C
       }
     
 
-      for(int i = 0; i < 2; i++)
+      for(int i = 0; i < 3; i++)
       {
         for (int j = 0; j < 4; j++)
         {
@@ -157,10 +157,15 @@ bool JointOperator::getTrajectoryInfo2(std::vector<std::vector<double>> joint_po
   {
     jnt_tra_msg->joint_names.push_back(joint[index]);
   }
-
-  std::vector<std::string> motion_name = {"motion1","motion2","motion3","motion4","motion5"};
-  std::vector<std::vector<double>> motion = joint_position;
-  std::vector<double> time_from_start = {2.0, 3.0, 4.0, 5.0, 6.0};
+  std::vector<double> p1 = joint_position[0];
+  std::vector<double> p2 = joint_position[1];
+  std::vector<double> p3 = joint_position[2];
+  ROS_INFO("%f, %f, %f,%f",p1[0], p1[1],p1[2],p1[3]);
+  ROS_INFO("%f, %f, %f,%f",p2[0], p2[1],p2[2],p2[3]);
+  ROS_INFO("%f, %f, %f,%f",joint_position[2][0], p3[1],p3[2],p3[3]);
+  std::vector<std::string> motion_name = {"motion1","motion2","motion3","motion4","motion5","motion6","motion7","motion8"};
+  std::vector<std::vector<double>> motion = {p1,p2,p3,{0.0, 0.0, 0.0, 0.0},{0.538, -0.06348, -0.58844, 0.65272},{0.538, -0.231, -0.672, 0.905},{-0.5, -0.150858, -0.804671, 0.956325},{0.0, 0.0, 0.0, 0.0} };
+  std::vector<double> time_from_start = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
 
   for (uint8_t index = 0; index < motion_name.size(); index++)
   {
